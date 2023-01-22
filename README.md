@@ -15,7 +15,7 @@ cd ~/catkin_ws
 ```
 catkin build
 ```
-```
+
 ## Running a simulation of AR.Drone 2.0 traversing along predefined trajectory (8 shape) on Gazebo
 Run the following code lines in different terminals
 
