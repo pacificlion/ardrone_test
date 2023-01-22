@@ -1,6 +1,6 @@
 # ardrone
 
-Run the following codd
+Run the following code
 ```
 mkdir -p ~/catkin_ws/src
 cd catkin_ws/src
