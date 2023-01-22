@@ -7,6 +7,7 @@ cd catkin_ws/src
 git clone https://github.com/pacificlion/ardrone_test.git
 git clone https://github.com/pacificlion/vicon_bridge.git
 git clone https://github.com/pacificlion/ardrone_autonomy.git
+git clone https://github.com/pacificlion/ardrone_gazebo.git
 cd ~/catkin_ws
 
 ```
@@ -23,7 +24,7 @@ Run the following code lines in different terminals
 roscore
 ```
 ```
-roslaunch cvg_sim_gazebo ardrone_testworld.launch
+roslaunch ardrone_gazebo single_ardrone.launch
 ```
 ```
 rosrun ardrone_test ardrone_test_node
