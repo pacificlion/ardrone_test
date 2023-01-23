@@ -110,6 +110,7 @@ void height_pid_with_nav(double in);
 void height_pid(double in);
 void xy_pid(double x,double y,double z);
 void xy_pid_sim(double x,double y,double z);
+void make_square();
 std::string return_current_time_and_date();
 // Misc. functions
 //void quickSort(double arr[], int left, int right);
@@ -167,6 +168,8 @@ cout<<"p - pid control based traj track (simulation) | f - follow human (using v
 			break; 
 	case 'y': vicon_check_axis();
 			break;
+	case 'q': make_square();
+			break;
     case 'f':
 			vicon_follow();
 			break; 
@@ -218,6 +221,39 @@ cout<<"landed";
 
 }
 
+void bide_time(){
+	while(ctr<1000){
+		x0 = vicon_statedata.transform.translation.x, y0 = vicon_statedata.transform.translation.y, z0 = vicon_statedata.transform.translation.z;
+		qx0=vicon_statedata.transform.rotation.x, qy0=vicon_statedata.transform.rotation.y, qz0=vicon_statedata.transform.rotation.z, qw0=vicon_statedata.transform.rotation.w;
+		theta0 = atan2(+2.0 * (qw0*qx0 + qy0*qz0) , +1.0 - 2.0 * (qx0*qx0 + qy0*qy0));
+		phi0 = asin(+2.0 * (qw0*qy0 - qz0*qx0)); 
+		psi0 = 0;
+		ctr = ctr+1;
+		print_vicon_coordinates();
+		// cout<<x0<<","<<y0<<","<<z0<<","<<qx0<<","<<qy0<<","<<qz0<<endl;
+		ros::spinOnce(); 
+		loop_rate.sleep();
+	}
+}
+void make_square(){
+	// assume takeoff is already done
+	// move in +x
+	move(0.4,0,0,0,0,0);
+	bide_time();
+	hover(2);
+	// move in +y
+	move(0,0.4,0,0,0,0);
+	bide_time();
+	hover(2);
+	// move in -x
+	move(-0.4,0,0,0,0,0);
+	bide_time();
+	hover(2);
+	// move in -y
+	move(0,-0.4,0,0,0,0);
+	bide_time();
+	hover(2);
+}
 void vicon_follow(){
 ofstream myfile;
 myfile.open("/home/kaustubh/data/dataf.dat", ios::out | ios::app );
