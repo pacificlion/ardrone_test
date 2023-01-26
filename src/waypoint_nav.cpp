@@ -221,37 +221,94 @@ cout<<"landed";
 
 }
 
-void bide_time(){
-	while(ctr<1000){
-		x0 = vicon_statedata.transform.translation.x, y0 = vicon_statedata.transform.translation.y, z0 = vicon_statedata.transform.translation.z;
-		qx0=vicon_statedata.transform.rotation.x, qy0=vicon_statedata.transform.rotation.y, qz0=vicon_statedata.transform.rotation.z, qw0=vicon_statedata.transform.rotation.w;
-		theta0 = atan2(+2.0 * (qw0*qx0 + qy0*qz0) , +1.0 - 2.0 * (qx0*qx0 + qy0*qy0));
-		phi0 = asin(+2.0 * (qw0*qy0 - qz0*qx0)); 
-		psi0 = 0;
-		ctr = ctr+1;
-		print_vicon_coordinates();
-		// cout<<x0<<","<<y0<<","<<z0<<","<<qx0<<","<<qy0<<","<<qz0<<endl;
-		ros::spinOnce(); 
-		loop_rate.sleep();
-	}
+
+void print_navdata(std::chrono::time_point<std::chrono::system_clock> start){
+	double vx,vy,vz;
+	vx = drone_navdata.vx, vy=drone_navdata.vy,vz=drone_navdata.vz;
+
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	cout<<"time:" <<elapsed_seconds.count()<<"tm:"<<drone_navdata.tm<<",vx:"<<vx<<",vy:"<<vy<<",vz:"<<vz<<",motor:"<<+drone_navdata.motor1<<\
+	",m2:"<<+drone_navdata.motor2<<",m3:"<<+drone_navdata.motor3<<",m4:\
+	"<<+drone_navdata.motor4<<",batteryPercent:"<<drone_navdata.batteryPercent<<",altitude:"<<drone_navdata.altd<<",state:"<<drone_navdata.state<<endl;
 }
+
+void print_navdata_loop(std::chrono::time_point<std::chrono::system_clock> start){
+	double vx,vy,vz;
+	vx = drone_navdata.vx, vy=drone_navdata.vy,vz=drone_navdata.vz;
+
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	cout<<"time:" <<elapsed_seconds.count()<<"tm:"<<drone_navdata.tm<<",vx:"<<vx<<",vy:"<<vy<<",vz:"<<vz<<",motor:"<<+drone_navdata.motor1<<\
+	",m2:"<<+drone_navdata.motor2<<",m3:"<<+drone_navdata.motor3<<",m4:\
+	"<<+drone_navdata.motor4<<",batteryPercent:"<<drone_navdata.batteryPercent<<",altitude:"<<drone_navdata.altd<<endl;
+}
+
 void make_square(){
+
+	ros::Rate loop_rate(250);
 	// assume takeoff is already done
+	
+	double t0=ros::Time::now().toSec();
+	double t1=ros::Time::now().toSec();
+	std::chrono::time_point<std::chrono::system_clock> start= std::chrono::system_clock::now();
+
+	do {
 	// move in +x
-	move(0.4,0,0,0,0,0);
-	bide_time();
-	hover(2);
+	move(0.2,0,0,0,0,0);
+	t1 = ros::Time::now().toSec(); 
+	print_vicon_coordinates();
+	print_navdata(start);
+
+	ros::spinOnce(); //if this function is not mentioned the function will stay in the buffer and cannot be able to publish
+	loop_rate.sleep();
+	}while(t1 <= (t0+2));
+
+	t0=ros::Time::now().toSec();
+	t1=ros::Time::now().toSec();
+
+	do {
 	// move in +y
-	move(0,0.4,0,0,0,0);
-	bide_time();
-	hover(2);
+	move(0,0.2,0,0,0,0);
+	t1 = ros::Time::now().toSec(); 
+	print_vicon_coordinates();
+	print_navdata(start);
+
+	ros::spinOnce(); //if this function is not mentioned the function will stay in the buffer and cannot be able to publish
+	loop_rate.sleep();
+	}while(t1 <= (t0+2));
+
+
+	t0=ros::Time::now().toSec();
+	t1=ros::Time::now().toSec();
+
+
+	do {
 	// move in -x
-	move(-0.4,0,0,0,0,0);
-	bide_time();
-	hover(2);
+	move(-0.2,0,0,0,0,0);
+	t1 = ros::Time::now().toSec(); 
+	print_vicon_coordinates();
+	print_navdata(start);
+
+	ros::spinOnce(); //if this function is not mentioned the function will stay in the buffer and cannot be able to publish
+	loop_rate.sleep();
+	}while(t1 <= (t0+2));
+	
+	
+	t0=ros::Time::now().toSec();
+	t1=ros::Time::now().toSec();
+
+	do {
 	// move in -y
-	move(0,-0.4,0,0,0,0);
-	bide_time();
+	move(0,-0.2,0,0,0,0);
+	t1 = ros::Time::now().toSec(); 
+	print_vicon_coordinates();
+	print_navdata(start);
+
+	ros::spinOnce(); //if this function is not mentioned the function will stay in the buffer and cannot be able to publish
+	loop_rate.sleep();
+	}while(t1 <= (t0+2));
+	
 	hover(2);
 }
 void vicon_follow(){
@@ -410,26 +467,8 @@ void vicon_check_axis(){
 
 
 
-void print_navdata(std::chrono::time_point<std::chrono::system_clock> start){
-	double vx,vy,vz;
-	vx = drone_navdata.vx, vy=drone_navdata.vy,vz=drone_navdata.vz;
 
-	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	cout<<"time:" <<elapsed_seconds.count()<<"tm:"<<drone_navdata.tm<<",vx:"<<vx<<",vy:"<<vy<<",vz:"<<vz<<",motor:"<<+drone_navdata.motor1<<\
-	",m2:"<<+drone_navdata.motor2<<",m3:"<<+drone_navdata.motor3<<",m4:\
-	"<<+drone_navdata.motor4<<",batteryPercent:"<<drone_navdata.batteryPercent<<",altitude:"<<drone_navdata.altd<<",state:"<<drone_navdata.state<<endl;
-}
-void print_navdata_loop(std::chrono::time_point<std::chrono::system_clock> start){
-	double vx,vy,vz;
-	vx = drone_navdata.vx, vy=drone_navdata.vy,vz=drone_navdata.vz;
 
-	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	cout<<"time:" <<elapsed_seconds.count()<<"tm:"<<drone_navdata.tm<<",vx:"<<vx<<",vy:"<<vy<<",vz:"<<vz<<",motor:"<<+drone_navdata.motor1<<\
-	",m2:"<<+drone_navdata.motor2<<",m3:"<<+drone_navdata.motor3<<",m4:\
-	"<<+drone_navdata.motor4<<",batteryPercent:"<<drone_navdata.batteryPercent<<",altitude:"<<drone_navdata.altd<<endl;
-}
 void check_rpm_delay(){
 	cout<<"started rpm"<<endl;
 	ros::Rate loop_rate(250);

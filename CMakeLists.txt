@@ -138,6 +138,10 @@ add_executable(ardrone_test_node src/waypoint_nav.cpp)
 target_link_libraries(ardrone_test_node ${catkin_LIBRARIES}) 
 add_dependencies(ardrone_test_node ardrone_autonomy_gencpp tum_ardrone_gencpp)
 
+add_executable(ardrone_test2 src/ardrone-connect.cpp)
+target_link_libraries(ardrone_test2 ${catkin_LIBRARIES})
+#add_dependencies(ardrone_test2 )
+
 ## Declare a cpp executable
 
 #add_executable(estimation_node src/estimation.cpp)
