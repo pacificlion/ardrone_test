@@ -56,7 +56,3 @@ Now, press w to takeoff
 rosrun ardrone_test ardrone_test_node
 ```
 Press v to start trajectory tracking. (data of desired and actual positions can be saved and plotted)
-
-# Credits:
-
-Initial code for git repository package was created from [kaustubhsridhar/AR.Drone-nonlinear-control](https://github.com/kaustubhsridhar/AR.Drone-nonlinear-control)
